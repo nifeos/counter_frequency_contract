@@ -20,8 +20,8 @@ What a run is:
 
 Last run: 2026-11-19
 - The README gives no `rustup target add` line for the bare-metal build; it only lists target names. The run machine already had them, so the build succeeded, but a stranger would not know the step.
-- The README never says how to install Kani or that `cargo kani` is the command; `cargo kani` was guessed and worked (two harnesses, about 12 seconds in total). It gives no timing and no command for one harness.
+- The README never says how to install Kani or that `cargo kani` is the command; the run guessed `cargo kani`, and it worked (two harnesses, about 12 seconds in total). It gives no timing and no command for one harness.
 - The README does not say what a passing proof run prints that looks alarming (for example "5 unreachable" checks in the summary).
-- The README says falsification patches exist but not how to apply and revert one; `git apply falsifications/<patch>` then `cargo kani` (one failure, as expected) then `git checkout src` worked, but was inferred from the patch format.
-- The README says "Rust 1.88" but gives no command to check it; `cargo +1.88 build` was inferred and only `cargo +1.88 --version` was run, so the minimum version itself was not verified from the README.
-- Passed as documented: `cargo test` (7 unit tests, 4 doctests) and the three README-named `--target` builds (only the x86_64 build was run).
+- The README says falsification patches exist but not how to apply and revert one; the run inferred `git apply falsifications/<patch>`, then `cargo kani` (one failure, as expected), then `git checkout src` from the patch format, and that worked.
+- The README says "Rust 1.88" but gives no command to check it; the run inferred `cargo +1.88 build` and ran only `cargo +1.88 --version`, so it did not verify the minimum version itself from the README.
+- Passed as documented: `cargo test` (7 unit tests, 4 doctests) and the three README-named `--target` builds (the run built only x86_64).
