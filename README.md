@@ -62,12 +62,40 @@ address-space layout.
 
 ```sh
 cargo test
+rustup target add x86_64-unknown-none aarch64-unknown-none-softfloat riscv64imac-unknown-none-elf
 cargo build --lib --target x86_64-unknown-none   # also aarch64-unknown-none-softfloat, riscv64imac-unknown-none-elf
 ```
 
-The tests drive both halves of the page without a kernel. The end-to-end test, which compares the
-number a user process reads with the one the kernel measured, lives with the kernel that maps the
-page.
+Run `rustup target add` once, before the first bare-metal build. The tests drive both halves of the
+page without a kernel. The end-to-end test, which compares the number a user process reads with the
+one the kernel measured, lives with the kernel that maps the page.
+
+### Running the proofs
+
+Install Kani 0.68.0, the version CI uses, with `cargo install --locked kani-verifier --version
+0.68.0`, then `cargo kani setup`, which downloads a model checker. Plain `cargo kani` runs both
+harnesses in about 12 seconds. To run one:
+
+```sh
+cargo kani --harness verification::a_built_page_reads_back_its_rate --exact
+```
+
+A passing run prints lines that look alarming and are expected. Among them are `warning: use of an
+unstable feature`, a `trailing semicolon in macro` warning on the `const` assertion, and a list of
+unsupported constructs. Some checks read `UNREACHABLE`, in a summary such as `0 of 99 failed (5
+unreachable)`.
+Trust the last line: `Complete - 2 successfully verified harnesses, 0 failures, 2 total.`
+
+### Running one falsification patch
+
+```sh
+git apply falsifications/verification.a_built_page_reads_back_its_rate.patch
+cargo kani --harness verification::a_built_page_reads_back_its_rate --exact   # ends VERIFICATION:- FAILED
+git checkout -- src
+```
+
+The harness name is the part of the patch's file name after `verification.`, and each patch turns
+its own harness red.
 
 ## BUGS
 
@@ -79,7 +107,13 @@ page.
 
 ## Minimum Rust version
 
-Rust 1.88.
+Rust 1.88. To check it:
+
+```sh
+rustup toolchain install 1.88 --profile minimal --target x86_64-unknown-none
+cargo +1.88 test
+cargo +1.88 build --lib --target x86_64-unknown-none
+```
 
 ## License
 
