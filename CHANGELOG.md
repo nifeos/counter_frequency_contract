@@ -5,7 +5,7 @@ sentence beside it.
 
 ## 0.1.0-pre.2
 
-- The crate's code is unchanged. The README badges and links, the code owners file and the
+- The crate's code does not change. The README badges and links, the code owners file and the
   dependency policy name the partsfoundry organization.
 
 ## 0.1.0-pre.1
